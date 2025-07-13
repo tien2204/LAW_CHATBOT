@@ -2,6 +2,10 @@ from functools import lru_cache
 from pydantic import BaseSettings, Field
 
 class Settings(BaseSettings):
+
+    serpapi_key: str | None = None         # cho web‑search fallback
+    score_threshold: float = 0.28          # ngưỡng router
+    
     # đường tới vector store
     chroma_dir: str = Field("./law_db", env="CHROMA_DIR")
     collection_name: str = "vn_law"
