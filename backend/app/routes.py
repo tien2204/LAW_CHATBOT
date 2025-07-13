@@ -1,16 +1,17 @@
 import re, json
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import JSONResponse, EventSourceResponse
-from .chains import chain, stream_answer
+from .chains import router_chain
 
 router = APIRouter(tags=["chat"])
 
 @router.post("/chat")
 async def chat(req: Request):
     q = (await req.json()).get("message", "")
-    result = await chain.ainvoke(q)
-    cites = list(set(re.findall(r"§[^ ]+", result)))
+    result = await router_chain.ainvoke(q)
+    cites = list(set(re.findall(r"§[^ ]+|https?://\S+", result)))
     return JSONResponse({"answer": result, "citations": cites})
+
 
 @router.get("/stream")
 async def chat_stream(request: Request, q: str):
