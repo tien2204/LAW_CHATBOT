@@ -3,7 +3,7 @@ from pydantic import BaseSettings, Field
 
 class Settings(BaseSettings):
 
-    serpapi_key: str | None = None         # cho web‑search fallback
+    serpapi_key: str | None = Field(default=None, env="SERP_API_KEY")         # cho web‑search fallback
     score_threshold: float = 0.28          # ngưỡng router
     
     # đường tới vector store
@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     llm_model: str = "mixtral-8x7b"
     llm_temperature: float = 0.0
 
-    groq_api_key: str | None = None    # hoặc OPENAI_API_KEY nếu dùng OpenAI
+    groq_api_key: str | None = Field(default=None, env="GROQ_API_KEY")    # hoặc OPENAI_API_KEY nếu dùng OpenAI
 
     class Config:
         env_file = ".env"
