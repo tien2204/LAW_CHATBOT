@@ -3,7 +3,7 @@ uvicorn[standard]==0.29.*
 langchain==0.2.*
 langchain-community==0.2.*
 huggingface-hub>=0.23
-sentence-transformers>=2.7
+sentence-transformers==2.2.2
 chromadb==0.4.*
 datasets>=2.19
 FlagEmbedding==1.2.0         # BGE‑reranker
