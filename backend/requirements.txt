@@ -6,5 +6,5 @@ huggingface-hub>=0.23
 sentence-transformers>=2.7
 chromadb==0.4.*
 datasets>=2.19
-flag_embedding==1.2.0         # BGE‑reranker
+FlagEmbedding==1.2.0         # BGE‑reranker
 python-dotenv>=1.0
