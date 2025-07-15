@@ -2,9 +2,13 @@ fastapi[all]==0.111.*        # Starlette<0.37, Pydantic v2
 uvicorn[standard]==0.29.*
 langchain==0.2.*
 langchain-community==0.2.*
-huggingface-hub>=0.23
+huggingface_hub==0.24.1
 sentence-transformers==2.2.2
+transformers==4.30.2
+tokenizers==0.13.3
 chromadb==0.4.*
 datasets>=2.19
-FlagEmbedding==1.2.0         # BGE‑reranker
+FlagEmbedding==1.1.0         # BGE‑reranker
 python-dotenv>=1.0
+pydantic>=2.1
+pydantic-settings>=2.0

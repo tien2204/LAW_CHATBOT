@@ -4,7 +4,7 @@ Chạy một lần để tạo Chroma vector store:  python build_vector_db.py
 import pathlib, tqdm, os
 from datasets import load_dataset
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 import chromadb
 from app.config import get_settings
 
@@ -22,8 +22,16 @@ chunks = sum([splitter.split_text(t) for t in tqdm.tqdm(docs_raw)], [])
 
 print(f">> Tổng chunk: {len(chunks):,}")
 
-emb = HuggingFaceEmbeddings(model_name=SET.embed_model)
+print(">> Khởi tạo HuggingFaceEmbeddings …")
+emb = HuggingFaceEmbeddings(
+    model_name=SET.embed_model,
+    model_kwargs={"local_files_only": True}  # tránh tải lại
+)
+print(">> Đã khởi tạo xong.")
+
+print(">> Bắt đầu tạo embedding cho các chunk …")
 vectors = emb.embed_documents(chunks)
+print(">> Tạo xong embedding.")
 
 client = chromadb.PersistentClient(path=str(DB_DIR))
 col = client.get_or_create_collection(SET.collection_name)

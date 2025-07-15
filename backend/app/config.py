@@ -1,5 +1,6 @@
 from functools import lru_cache
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings
+from pydantic import Field
 
 class Settings(BaseSettings):
 
@@ -20,8 +21,10 @@ class Settings(BaseSettings):
 
     groq_api_key: str | None = Field(default=None, env="GROQ_API_KEY")    # hoặc OPENAI_API_KEY nếu dùng OpenAI
 
-    class Config:
-        env_file = ".env"
+    model_config = {
+        "env_file": ".env",
+        "extra": "ignore"  # bỏ qua biến thừa
+    }
 
 @lru_cache
 def get_settings() -> Settings:
