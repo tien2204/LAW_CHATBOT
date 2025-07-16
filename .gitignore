@@ -1,3 +1,4 @@
 .env
 venv/
 backend/venv/
+backend/law_db/
