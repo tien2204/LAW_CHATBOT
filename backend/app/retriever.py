@@ -1,10 +1,10 @@
 """
 Hybrid retrieval  = 0.7 * EmbeddingSim  + 0.3 * BM25
-Sau đó Cross‑Encoder rerank  →  trả về (doc, score)
+Sau đó Encoder rerank  →  trả về (doc, score)
 """
 from typing import List, Tuple
 from langchain.retrievers import BM25Retriever, EnsembleRetriever
-from flag_embedding import BGEM3CrossEncoderReranker
+from FlagEmbedding import FlagReranker
 from langchain.docstore.document import Document
 from .db import vectordb
 
@@ -21,8 +21,24 @@ _bm25.k = 12
 # 3) Hybrid
 _hybrid = EnsembleRetriever(retrievers=[_ann, _bm25], weights=[0.7, 0.3])
 
-# 4) Cross‑encoder reranker
-_reranker = BGEM3CrossEncoderReranker(model_name="BAAI/bge-reranker-base")
+"""
+from .config import get_settings
+from FlagEmbedding import FlagReranker
+
+SET = get_settings()
+
+_reranker = FlagReranker(
+    model_name_or_path=SET.rerank_model,
+    use_fp16=True
+)
+
+Dong bo ten model voi phan 4 neu muon dung model tu file config.py
+"""
+# 4) Encoder reranker
+_reranker = FlagReranker(
+    model_name_or_path="BAAI/bge-reranker-v2-m3",
+    use_fp16=True
+)
 
 def hybrid_retrieve(query: str, top_k: int = 5) -> List[Tuple[Document, float]]:
     docs = _hybrid.get_relevant_documents(query)

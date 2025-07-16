@@ -6,8 +6,8 @@ from langchain.utilities import SerpAPIWrapper
 from .config import get_settings
 
 SET = get_settings()
-_search = SerpAPIWrapper(serpapi_api_key=SET.serpapi_key,
-                         k=5, gl="vn", hl="vi")
+
+_search = SerpAPIWrapper(serpapi_api_key=SET.serpapi_key)
 
 def search_web(query: str) -> List[str]:
     q = f"{query} site:thuvienphapluat.vn OR moj.gov.vn"

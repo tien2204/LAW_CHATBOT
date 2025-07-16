@@ -1,7 +1,8 @@
 import re, asyncio, json
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema.runnable import RunnablePassthrough, RunnableLambda, RunnableBranch
-from langchain.chat_models import ChatGroq, ChatOpenAI
+from langchain_groq import ChatGroq
+from langchain_community.chat_models import ChatOpenAI
 from .config import get_settings
 from .retriever import hybrid_retrieve
 from .web_fallback import search_web
@@ -19,13 +20,13 @@ SYSTEM_WEB  = ("Không tìm thấy quy định trong kho dữ liệu nội bộ.
 
 PROMPT_MAIN = ChatPromptTemplate.from_messages([
     ("system", SYSTEM_MAIN),
-    ("context", "{context}"),
+    ("system", "{context}"),
     ("user", "{question}"),
 ])
 
 PROMPT_WEB = ChatPromptTemplate.from_messages([
     ("system", SYSTEM_WEB),
-    ("web", "{web_snippets}"),
+    ("system", "{web_snippets}"),
     ("user", "{question}"),
 ])
 
