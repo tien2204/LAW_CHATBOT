@@ -37,10 +37,24 @@ Dong bo ten model voi phan 4 neu muon dung model tu file config.py
 # 4) Encoder reranker
 _reranker = FlagReranker(
     model_name_or_path="BAAI/bge-reranker-v2-m3",
-    use_fp16=True
+    use_fp16=False,         # ⚠️ đổi thành False nếu dùng CPU
+    devices=["cpu"]         # ⚠️ chắc chắn dùng CPU
 )
 
 def hybrid_retrieve(query: str, top_k: int = 5) -> List[Tuple[Document, float]]:
+    # Lấy tài liệu ban đầu bằng hybrid retriever
     docs = _hybrid.get_relevant_documents(query)
-    ranked = _reranker.rerank(query, docs, top_n=top_k, return_sorted=True)
-    return [(d, s) for d, s in ranked]           # k tài liệu + điểm
+
+    # Tạo các cặp (query, doc text)
+    sentence_pairs = [(query, doc.page_content) for doc in docs]
+
+    # Tính điểm bằng encoder-based reranker
+    scores = _reranker.compute_score_single_gpu(sentence_pairs, device="cpu")
+
+    # Gộp docs + scores rồi sắp xếp theo điểm giảm dần
+    reranked = sorted(zip(docs, scores), key=lambda x: x[1], reverse=True)
+
+    return reranked[:top_k]
+
+# print("TYPE:", type(_reranker))
+# print("DIR:", dir(_reranker))

@@ -9,9 +9,10 @@ router = APIRouter(tags=["chat"])
 @router.post("/chat")
 async def chat(req: Request):
     q = (await req.json()).get("message", "")
-    result = await router_chain.ainvoke(q)
+    result = (await router_chain.ainvoke(q)).content  # 🔧 fix lỗi TypeError
     cites = list(set(re.findall(r"§[^ ]+|https?://\S+", result)))
     return JSONResponse({"answer": result, "citations": cites})
+
 
 
 @router.get("/stream")

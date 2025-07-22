@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     rerank_model: str = "BAAI/bge-reranker-v2-m3"
 
     # LLM (Groq: mixtral‑8x7b / llama3‑70b‑instruct, …)
-    llm_model: str = "mixtral-8x7b"
+    llm_model: str = "llama-3.3-70b-versatile"
     llm_temperature: float = 0.0
 
     groq_api_key: str | None = Field(default=None, env="GROQ_API_KEY")    # hoặc OPENAI_API_KEY nếu dùng OpenAI
