@@ -1,52 +1,44 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import ChatBox from "./components/ChatBox.jsx";
 import Robot from "./components/Robot.jsx";
 
 export default function App() {
   const [messages, setMsgs] = useState([]);
 
-  // thêm tin nhắn
-  const push = (role, text) =>
-    setMsgs((m) => [...m, { role, text }]);
-
-  // gửi prompt tới /stream (SSE)
+  // Hàm gửi prompt đến server và nhận phản hồi
   const send = (prompt) => {
-    push("user", prompt);
-    push("bot", ""); // tạo tin nhắn bot
-  
+    setMsgs((prev) => [...prev, { role: "user", text: prompt }]);
+    setMsgs((prev) => [...prev, { role: "bot", text: "" }]);
+
     const ev = new EventSource(`/stream?q=${encodeURIComponent(prompt)}`);
-    let answer = "";
-  
+
     ev.onmessage = (e) => {
-      answer += e.data;
-  
-      if (answer.endsWith("[CITATIONS]") || answer.endsWith("]")) return;
-  
-      setMsgs(prev => {
-        const last = prev.at(-1);
-        if (!last || last.role !== "bot") return prev;
-        const updated = [...prev];
-        updated[updated.length - 1] = { ...last, text: answer };
-        return updated;
+      if (e.data.includes("[CITATIONS]")) {
+        ev.close();
+        return;
+      }
+      setMsgs((prev) => {
+        const newMsgs = [...prev];
+        newMsgs[newMsgs.length - 1].text += e.data;
+        return newMsgs;
       });
     };
-  
     ev.onerror = () => ev.close();
-    ev.addEventListener("end", () => ev.close());
   };
-  
-
 
   return (
-    <div className="h-screen flex bg-neutral-100">
-      {/* Left – Robot */}
-      <div className="w-1/2 relative overflow-hidden">
-        <Robot lastBotMsg={messages.filter(m=>m.role==='bot').at(-1)?.text}/>
+    // Dùng flex cho layout chính
+    <div className="h-screen w-full flex bg-[#F9F9F9]">
+      {/* ===== Panel Robot (Trái) ===== */}
+      {/* Cho panel này một màu nền riêng và chiếm 1/3 không gian */}
+      <div className="w-1/3 bg-gray-800 relative overflow-hidden hidden md:block">
+        <Robot lastBotMsg={messages.filter((m) => m.role === "bot").at(-1)?.text} />
       </div>
 
-      {/* Right – Chat */}
-      <div className="w-1/2 border-l flex flex-col">
-        <ChatBox messages={messages} onPrompt={send}/>
+      {/* ===== Panel Chat (Phải) ===== */}
+      {/* Panel này chiếm phần không gian còn lại */}
+      <div className="w-full md:w-2/3 flex flex-col">
+        <ChatBox messages={messages} onPrompt={send} />
       </div>
     </div>
   );
