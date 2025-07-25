@@ -21,5 +21,6 @@ async def chat_stream(request: Request, q: str):
         async for token in stream_answer(q):
             if await request.is_disconnected():
                 break
-            yield f"data: {token}\n\n"
+            yield token
+            
     return EventSourceResponse(event_gen())
