@@ -2,7 +2,7 @@ import re, json
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import JSONResponse
 from sse_starlette.sse import EventSourceResponse
-from .chains import router_chain
+from .chains import router_chain, stream_answer
 
 router = APIRouter(tags=["chat"])
 

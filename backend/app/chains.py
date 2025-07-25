@@ -74,8 +74,9 @@ router_chain = RunnableBranch(
 async def stream_answer(question: str):
     answer = ""
     async for chunk in router_chain.astream(question):
-        answer += chunk
-        yield chunk
+        content = getattr(chunk, "content", str(chunk))
+        answer += content
+        yield content
     # citations
     cites = re.findall(r"§[^ ]+|https?://\S+", answer)
     yield f"\n\n[CITATIONS] {', '.join(set(cites))}"
