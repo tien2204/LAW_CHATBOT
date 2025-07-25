@@ -2,3 +2,5 @@
 venv/
 backend/venv/
 backend/law_db/
+frontend/node_modules/
+
