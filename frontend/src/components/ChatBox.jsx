@@ -1,9 +1,9 @@
 import { useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown"; // <-- 1. Import thư viện
 
 // Component Icon đơn giản
 const UserIcon = () => <div className="w-8 h-8 rounded-full bg-green-500 flex-shrink-0"></div>;
 const BotIcon = () => <div className="w-8 h-8 rounded-full bg-gray-800 flex-shrink-0"></div>;
-
 
 export default function ChatBox({ messages, onPrompt }) {
   const input = useRef();
@@ -15,11 +15,9 @@ export default function ChatBox({ messages, onPrompt }) {
   }, [messages]);
 
   return (
-    // Bọc toàn bộ component trong một container để căn giữa
     <div className="flex flex-col h-full w-full max-w-4xl mx-auto px-4">
       {/* ===== Lịch sử chat ===== */}
       <div className="flex-1 overflow-y-auto py-8">
-        {/* Lời chào khi chưa có tin nhắn */}
         {messages.length === 0 ? (
           <div className="text-center">
             <h1 className="text-3xl font-semibold text-gray-700">Law Chatbot</h1>
@@ -30,13 +28,9 @@ export default function ChatBox({ messages, onPrompt }) {
             {messages.map((m, i) => (
               <div
                 key={i}
-                // Dùng flex để căn icon và text
                 className={`flex items-start gap-4 ${m.role === "user" ? "justify-end" : ""}`}
               >
-                {/* Icon của Bot */}
                 {m.role === "bot" && <BotIcon />}
-
-                {/* Bong bóng chat */}
                 <div
                   className={`px-4 py-2 rounded-lg max-w-[75%] whitespace-pre-wrap shadow-sm ${
                     m.role === "user"
@@ -44,10 +38,14 @@ export default function ChatBox({ messages, onPrompt }) {
                       : "bg-white text-gray-800"
                   }`}
                 >
-                  {m.text || <span className="animate-pulse">...</span>}
+                  {/* ▼▼▼ 2. SỬ DỤNG REACT-MARKDOWN TẠI ĐÂY ▼▼▼ */}
+                  {m.text ? (
+                    <ReactMarkdown>{m.text}</ReactMarkdown>
+                  ) : (
+                    <span className="animate-pulse">...</span>
+                  )}
+                  {/* ▲▲▲ THAY THẾ CHO {m.text} ▲▲▲ */}
                 </div>
-                
-                {/* Icon của User */}
                 {m.role === "user" && <UserIcon />}
               </div>
             ))}
@@ -56,7 +54,7 @@ export default function ChatBox({ messages, onPrompt }) {
         <div ref={bottom} />
       </div>
 
-      {/* ===== Khung nhập liệu ===== */}
+      {/* ===== Khung nhập liệu (giữ nguyên) ===== */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
